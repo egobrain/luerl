@@ -111,7 +111,7 @@ ipairs([#tref{}=Tref|_], St) ->
 	Meta -> luerl_emul:functioncall(Meta, [Tref], St)
     end;
 ipairs(As, St) -> badarg_error(ipairs, As, St).
-    
+
 ipairs_next([A], St) -> ipairs_next([A,0.0], St);
 ipairs_next([#tref{i=T},K|_], St) ->
     #table{a=Arr} = ?GET_TABLE(T, St#luerl.ttab),	%Get the table
@@ -120,7 +120,7 @@ ipairs_next([#tref{i=T},K|_], St) ->
 	    Next = I + 1,
 	    case raw_get_index(Arr, Next) of
 		nil -> {[nil],St};
-		V -> {[float(Next),V],St}
+		V -> {[Next,V],St}
 	    end;
 	_NegFalse -> lua_error({invalid_key,ipairs,K}, St)
     end;
@@ -160,7 +160,7 @@ next(As, St) -> badarg_error(next, As, St).
 
 next_index(I0, Arr, Dict, St) ->
     case next_index_loop(I0+1, Arr, array:size(Arr)) of
-	{I1,V} -> {[float(I1),V],St};
+	{I1,V} -> {[I1,V],St};
 	none ->
 	    %% Nothing in the array, take table instead.
 	    first_key(Dict, St)
@@ -202,7 +202,7 @@ print(Args, St0) ->
 rawequal([A1,A2|_], St) -> {[A1 =:= A2],St};
 rawequal(As, St) -> badarg_error(rawequal, As, St).
 
-rawlen([A|_], St) when is_binary(A) -> {[float(byte_size(A))],St};
+rawlen([A|_], St) when is_binary(A) -> {[byte_size(A)],St};
 rawlen([#tref{}=T|_], St) ->
     {[luerl_lib_table:raw_length(T, St)],St};
 rawlen(As, St) -> badarg_error(rawlen, As, St).
@@ -260,7 +260,7 @@ raw_set_key(Dict, K, V) -> ttdict:store(K, V, Dict).
 
 %% select(Args, State) -> {[Element],State}.
 
-select([<<$#>>|As], St) -> {[float(length(As))],St};
+select([<<$#>>|As], St) -> {[length(As)],St};
 select([A|As], St) ->
     %%io:fwrite("sel:~p\n", [[A|As]]),
     Len = length(As),
@@ -387,7 +387,7 @@ loadfile(As, St) ->
 	    load_ret(Ret, St);
 	nil -> badarg_error(loadfile, As, St)
     end.
- 
+
 loadstring(As, St) ->
     case luerl_lib:conv_list(As, [string]) of
 	[S] ->

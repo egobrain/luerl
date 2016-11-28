@@ -289,7 +289,7 @@ gsub_repl_val(S, Val, Ca) ->
 
 %% len(String) -> Length.
 
-len([A|_], St) when is_binary(A) -> {[float(byte_size(A))],St};
+len([A|_], St) when is_binary(A) -> {[byte_size(A)],St};
 len([A|_], St) when is_number(A) ->
     {[length(luerl_lib:number_to_list(A))],St};
 len(As, St) -> badarg_error(len, As, St).

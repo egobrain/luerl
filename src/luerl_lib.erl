@@ -42,7 +42,7 @@
 
 lua_error(E, St) -> error({lua_error,E,St}).
 
-badarg_error(What, Args, St) -> lua_error({badarg,What,Args}, St). 
+badarg_error(What, Args, St) -> lua_error({badarg,What,Args}, St).
 
 %% Experimental structure for the array/list part of a table. List of
 %% segments containing values, all nil fields are gaps.
@@ -206,7 +206,7 @@ tonumber(A, B) ->
 	[N0,Base] ->
 	    case catch begin [N1] = string:tokens(N0, [9,10,11,12,13,32,160]),
 			     {ok,list_to_integer(N1, Base)} end of
-		{ok,I} -> float(I);
+		{ok,I} -> I;
 		_ -> nil
 	    end
     end.
@@ -221,7 +221,7 @@ tonumber(A, B) ->
 tointeger(A) ->
     case tonumber(A) of
 	nil -> nil;
-	N -> float(round(N))
+	N -> round(N)
     end.
 
 tonumbers(As) -> tonumbers(As, []).

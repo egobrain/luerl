@@ -30,9 +30,9 @@ Rules.
 	name_token(TokenChars, TokenLine).
 %% Numbers, we separately parse (Erlang) integers and floats.
 %% Integers.
-{D}+ : 
+{D}+ :
 	case catch {ok,list_to_integer(TokenChars)} of
-	    {ok,I} -> {token,{'NUMBER',TokenLine,float(I)}};
+	    {ok,I} -> {token,{'NUMBER',TokenLine,I}};
 	    _ -> {error,"illegal number"}
 	end.
 0[xX]{H}+ :
@@ -61,7 +61,7 @@ Rules.
 	    _ -> {error,"illegal number"}
 	end.
 
-%% Strings. 
+%% Strings.
 %% Handle the illegal newlines in string_token.
 \"(\\.|\\\n|[^"\\])*\" :
 	string_token(TokenChars, TokenLen, TokenLine).
@@ -138,7 +138,7 @@ name_token(Cs, L) ->
 
 base_token(Cs, B, L) ->
     case base1(Cs, B, 0) of
-	{I,[]} -> {token,{'NUMBER',L,float(I)}};
+	{I,[]} -> {token,{'NUMBER',L,I}};
 	{_,_} -> {error,"illegal based number"}
     end.
 

@@ -207,7 +207,7 @@ remove([#tref{i=N},P0|_]=As, St) ->
 remove(As, St) -> badarg_error(remove, As, St).
 
 test_remove(Arr, Dict) -> do_remove_last(Arr, Dict).
-test_remove(Arr, Dict, N) -> do_remove(Arr, Dict, N). 
+test_remove(Arr, Dict, N) -> do_remove(Arr, Dict, N).
 
 %% do_remove_last(Array, Dict) -> {Return,Array,Dict}.
 %%  Find the length and remove the last element. Return it even if it
@@ -330,7 +330,7 @@ length(#tref{}=T, St0) ->
 
 raw_length(#tref{i=N}, St) ->
     #table{a=Arr} = ?GET_TABLE(N, St#luerl.ttab),
-    float(length_loop(Arr)).
+    length_loop(Arr).
 
 length_loop(Arr) ->
     case {array:get(1, Arr),array:get(2, Arr)} of

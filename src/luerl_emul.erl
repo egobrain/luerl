@@ -1078,7 +1078,7 @@ op('not', A) -> {ok,not ?IS_TRUE(A)};
 %% op('not', false) -> {[true]};
 %% op('not', nil) -> {[true]};
 %% op('not', _) -> {[false]};			%Everything else is false
-op('#', B) when is_binary(B) -> {ok,float(byte_size(B))};
+op('#', B) when is_binary(B) -> {ok,byte_size(B)};
 op('#', #tref{}=T) ->
     {meta,fun (_, St) -> luerl_lib_table:length(T, St) end};
 op(Op, A) -> {error,{badarg,Op,[A]}}.
@@ -1122,7 +1122,7 @@ op(Op, A1, A2) -> {error,{badarg,Op,[A1,A2]}}.
 numeric_op(Op, A, E, Raw) ->
     case luerl_lib:tonumber(A) of
 	nil ->					%Neither number nor string
-	    {meta,fun (_, St) -> numeric_meta(Op, A, E, St) end}; 
+	    {meta,fun (_, St) -> numeric_meta(Op, A, E, St) end};
 	N -> {ok,Raw(N)}
     end.
 
