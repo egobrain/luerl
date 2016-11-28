@@ -24,7 +24,8 @@
 -export([install/1]).
 
 %% Export some functions which can be called from elsewhere.
--export([tostring/1,tostring/2]).
+-export([tostring/1,tostring/2,
+         getmetatable/2, setmetatable/2]).
 
 -import(luerl_lib, [lua_error/2,badarg_error/3]). %Shorten these
 

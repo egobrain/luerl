@@ -286,7 +286,10 @@ encode(B, St) when is_binary(B) -> {B,St};
 encode(A, St) when is_atom(A) -> {atom_to_binary(A, latin1),St};
 encode(I, St) when is_integer(I) -> {I,St};
 encode(F, St) when is_float(F) -> {F,St};
-encode(F, St) when ?IS_MAP(F) -> encode(maps:to_list(F), St);
+encode(F, St) when ?IS_MAP(F) ->
+    {T, St2} = encode(maps:to_list(F), St),
+    {[T2], St3} = luerl_lib_js:object([T], St2),
+    {T2, St3};
 encode(L, St0) when is_list(L) ->
     {Es,{_,St1}} = lists:mapfoldl(fun ({K0,V0}, {I,S0}) ->
 					  {K1,S1} = encode(K0, S0),
@@ -335,8 +338,8 @@ decode(false, _, _) -> false;
 decode(true, _, _) -> true;
 decode(B, _, _) when is_binary(B) -> B;
 decode(N, _, _) when is_number(N) -> N;
-decode(#tref{i=N}, St, In) ->
-    decode_table(N, St, In);
+decode(#tref{}=T, St, In) ->
+    decode_table(T, St, In);
 decode({function,Fun}, _, _) -> {function,Fun};
 decode(#function{}=Fun, State, _) ->
     F = fun(Args) ->
@@ -347,7 +350,7 @@ decode(#function{}=Fun, State, _) ->
     {function, F};
 decode(_, _, _) -> error(badarg).		%Shouldn't have anything else
 
-decode_table(N, St, In0) ->
+decode_table(#tref{i=N}=T, St, In0) ->
     case lists:member(N, In0) of
 	true -> error(recursive_data);		%Been here before
 	false ->
@@ -355,10 +358,28 @@ decode_table(N, St, In0) ->
 	    case ?GET_TABLE(N, St#luerl.ttab) of
 		#table{a=Arr,d=Dict} ->
 		    Fun = fun (K, V, Acc) ->
-				  [{decode(K, St, In1),decode(V, St, In1)}|Acc]
-			  end,
-		    Ts = ttdict:fold(Fun, [], Dict),
-		    array:sparse_foldr(Fun, Ts, Arr);
+                Key = decode(K, St, In1),
+                Value = decode(V, St, In1),
+                Acc#{Key => Value}
+			end,
+		    Ts = ttdict:fold(Fun, #{}, Dict),
+            case maps:size(Ts) of
+                0 ->
+                    case get_type(T, St) of
+                        <<"object">> -> array:sparse_foldr(Fun, Ts, Arr);
+                        <<"array">> -> array:sparse_foldr(fun(_K, V, Acc) ->
+                            [decode(V, St, In1)|Acc]
+                        end, [], Arr)
+                    end;
+                _ ->
+                    array:sparse_foldr(Fun, Ts, Arr)
+            end;
 		_Undefined -> error(badarg)
 	    end
+    end.
+
+get_type(T, St) ->
+    case luerl_emul:getmetamethod(T, <<"__jsontype">>, St) of
+        nil -> <<"array">>;
+        M -> M
     end.

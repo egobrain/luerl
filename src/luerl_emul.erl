@@ -69,6 +69,7 @@
 
 init() ->
     init([
+       {<<"js">>,luerl_lib_js},
        {<<"bit32">>,luerl_lib_bit32},
        {<<"io">>,luerl_lib_io},
        {<<"math">>,luerl_lib_math},
@@ -95,8 +96,6 @@ init(Libs) ->
     %% Set _G variable to point to it and add it packages.loaded.
     St7 = set_global_key(<<"_G">>, _G, St6),
     set_table_keys([<<"package">>,<<"loaded">>,<<"_G">>], _G, St7).
-
-
 
 load_libs(Libs, St) ->
     Fun = fun ({Key,Mod}, S) -> load_lib(Key, Mod, S) end,
