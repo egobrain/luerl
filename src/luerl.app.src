@@ -13,13 +13,13 @@
 %% limitations under the License.
 
 {application, luerl,
- [{description, "Luerl - an implementation of Lua on Erlang"},
-  {vsn, "0.3"},
+ [{description, "Fork of Luerl - an implementation of Lua on Erlang"},
+  {vsn, git},
   {modules, []},
   {registered, []},
   {applications, [kernel, stdlib]},
   {env, []},
   {mod, {luerl_app, []}},
-  {maintainers, ["Robert Virding"]},
+  {maintainers, ["Yakov Kozlov"]},
   {licenses, ["Apache"]}
  ]}.
