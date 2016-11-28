@@ -36,7 +36,7 @@
 -include("luerl_instrs.hrl").
 
 %% Basic interface.
--export([init/0,gc/1]).
+-export([init/0,init/1,gc/1]).
 -export([call/2,call/3,emul/2]).
 -export([load_chunk/2,load_chunk/3,load_function/2,load_function/3]).
 
@@ -68,6 +68,17 @@
 %% Initialise the basic state.
 
 init() ->
+    init([
+       {<<"bit32">>,luerl_lib_bit32},
+       {<<"io">>,luerl_lib_io},
+       {<<"math">>,luerl_lib_math},
+       {<<"os">>,luerl_lib_os},
+       {<<"string">>,luerl_lib_string},
+       {<<"table">>,luerl_lib_table},
+       {<<"debug">>,luerl_lib_debug}
+    ]).
+
+init(Libs) ->
     %% Initialise the general stuff.
     St0 = #luerl{meta=#meta{},tag=make_ref()},
     %% Initialise the table handling.
@@ -80,18 +91,12 @@ init() ->
     %% Now we can start adding libraries. Package MUST be first!
     St5 = load_lib(<<"package">>, luerl_lib_package, St4),
     %% Add the other standard libraries.
-    St6 = load_libs([
-		     {<<"bit32">>,luerl_lib_bit32},
-		     {<<"io">>,luerl_lib_io},
-		     {<<"math">>,luerl_lib_math},
-		     {<<"os">>,luerl_lib_os},
-		     {<<"string">>,luerl_lib_string},
-		     {<<"table">>,luerl_lib_table},
-		     {<<"debug">>,luerl_lib_debug}
-		    ], St5),
+    St6 = load_libs(Libs, St5),
     %% Set _G variable to point to it and add it packages.loaded.
     St7 = set_global_key(<<"_G">>, _G, St6),
     set_table_keys([<<"package">>,<<"loaded">>,<<"_G">>], _G, St7).
+
+
 
 load_libs(Libs, St) ->
     Fun = fun ({Key,Mod}, S) -> load_lib(Key, Mod, S) end,
