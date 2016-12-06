@@ -108,12 +108,12 @@ error(As, St) -> badarg_error(error, As, St).
 
 ipairs([#tref{}=Tref|_], St) ->
     case luerl_emul:getmetamethod(Tref, <<"__ipairs">>, St) of
-	nil -> {[{function,fun ipairs_next/2},Tref,0.0],St};
+	nil -> {[{function,fun ipairs_next/2},Tref,0],St};
 	Meta -> luerl_emul:functioncall(Meta, [Tref], St)
     end;
 ipairs(As, St) -> badarg_error(ipairs, As, St).
 
-ipairs_next([A], St) -> ipairs_next([A,0.0], St);
+ipairs_next([A], St) -> ipairs_next([A,0], St);
 ipairs_next([#tref{i=T},K|_], St) ->
     #table{a=Arr} = ?GET_TABLE(T, St#luerl.ttab),	%Get the table
     case ?IS_INTEGER(K, I) of

@@ -60,8 +60,8 @@ table(S, L, P) ->
     ].
 
 searchers_table() ->
-    [{1.0,{function,fun preload_searcher/2}},
-     {2.0,{function,fun lua_searcher/2}}].
+    [{1,{function,fun preload_searcher/2}},
+     {2,{function,fun lua_searcher/2}}].
 
 preload_table() -> [].
 

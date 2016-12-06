@@ -983,11 +983,11 @@ do_numfor(Is, Lvs, [Step,Limit,Init|Stk], Env, St, _, Fis) ->
 numfor_loop(N, Limit, Step, Fis, Lvs0, Stk0, Env0, St0) ->
     %% Leave the counter at the top of the stack for code to get.
     itrace_print("nl: ~p\n", [{N,Stk0}]),
-    if Step > 0.0, N =< Limit ->		%Keep going
+    if Step > 0, N =< Limit ->		%Keep going
 	    {Lvs1,Stk1,Env1,St1} =
 		emul(Fis, Lvs0, [N|Stk0], Env0, St0),
 	    numfor_loop(N+Step, Limit, Step, Fis, Lvs1, Stk1, Env1, St1);
-       Step < 0.0, N >= Limit ->		%Keep going
+       Step < 0, N >= Limit ->		%Keep going
 	    {Lvs1,Stk1,Env1,St1} =
 		emul(Fis, Lvs0, [N|Stk0], Env0, St0),
 	    numfor_loop(N+Step, Limit, Step, Fis, Lvs1, Stk1, Env1, St1);
@@ -1064,7 +1064,7 @@ build_tab(Fc, I, [Last|Stk0], St0) ->
     {Tref,Stk1,St1}.
 
 build_tab_last(I, [V|Vs]) ->
-    [{I,V}|build_tab_last(I+1.0, Vs)];
+    [{I,V}|build_tab_last(I+1, Vs)];
 build_tab_last(_, []) -> [];
 build_tab_last(_, Last) -> error({boom,build_tab_acc,Last}).
 

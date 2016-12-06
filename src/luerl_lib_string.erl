@@ -119,7 +119,7 @@ find(As, St0) ->
 	throw:{error,E} -> lua_error(E, St0)
     end.
 
-do_find([A1,A2], St) -> do_find([A1,A2,1.0], St);
+do_find([A1,A2], St) -> do_find([A1,A2,1], St);
 do_find([A1,A2,A3], St) -> do_find([A1,A2,A3,nil], St);
 do_find(As, St) ->
     case luerl_lib:conv_list(As, [lua_string,lua_string,integer,lua_bool]) of
@@ -312,7 +312,7 @@ match(As, St0) ->
 	throw:{error,E} -> lua_error(E, St0)
     end.
 
-do_match([A1,A2], St) -> do_match([A1,A2,1.0], St);
+do_match([A1,A2], St) -> do_match([A1,A2,1], St);
 do_match(As, St) ->
     case luerl_lib:conv_list(As, [lua_string,lua_string,integer]) of
 	[S,P,I] -> {do_match(S, byte_size(S), P, I),St};

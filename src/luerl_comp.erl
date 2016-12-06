@@ -131,7 +131,7 @@ forms_passes() ->				%Doing the forms
 
 do_passes([{do,Fun}|Ps], St0) ->
     case Fun(St0) of
-	{ok,St1} -> do_passes(Ps, St1); 
+	{ok,St1} -> do_passes(Ps, St1);
 	{error,St1} -> {error,St1}
     end;
 do_passes([{when_flag,Flag,Cmd}|Ps], St) ->
@@ -177,7 +177,7 @@ do_read_file(#comp{lfile=Name}=St) ->
 
 do_scan(#comp{code=Str}=St) ->
     case luerl_scan:string(Str) of
-	{ok,Ts,_} -> {ok,St#comp{code=Ts}}; 
+	{ok,Ts,_} -> {ok,St#comp{code=Ts}};
 	{error,E,_} -> {error,St#comp{errors=[E]}}
     end.
 
@@ -238,7 +238,7 @@ debug_print(Opts, Format, Args) ->
     end.
 
 %% The first pass (pass_1).
-%% Here we normalise the code and convert it to an internal form. 
+%% Here we normalise the code and convert it to an internal form.
 
 %% chunk(Code, Options) -> {ok,Code} | {error,Reason}.
 
@@ -275,8 +275,8 @@ stmt({repeat,Line,B,Exp}, St) ->
     repeat_stmt(Line, B, Exp, St);
 stmt({'if',Line,Tests,Else}, St) ->
     if_stmt(Line, Tests, Else, St);
-stmt({for,Line,V,I,L,B}, St) ->			%Default step of 1.0
-    numfor_stmt(Line, V, I, L, {'NUMBER',Line,1.0}, B, St);
+stmt({for,Line,V,I,L,B}, St) ->			%Default step of 1
+    numfor_stmt(Line, V, I, L, {'NUMBER',Line,1}, B, St);
 stmt({for,Line,V,I,L,S,B}, St) ->
     numfor_stmt(Line, V, I, L, S, B, St);
 stmt({for,Line,Ns,Gs,B}, St) ->
