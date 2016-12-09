@@ -61,9 +61,8 @@
 
 -record(fref, {i}).				%Frame reference, index
 
-
--define(IS_INTEGER(N), (float(round(N)) =:= N)).
--define(IS_INTEGER(N,I), (float(I=round(N)) =:= N)).
+-define(IS_INTEGER(N), (trunc(N)) =:= N).
+-define(IS_INTEGER(N,I), ((I=trunc(N)) =:= N)).
 -define(IS_TRUE(X), (((X) =/= nil) and ((X) =/= false))).
 
 %% Different methods for storing tables in the global data #luerl{}.
