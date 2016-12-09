@@ -99,25 +99,25 @@ setnth(N, V, [E|Es]) -> [E|setnth(N-1, V, Es)].
 format_error({undefined_method, Name, Args0, Line}) ->
     io_lib:format("undefined_method ~w with args: ~p on line ~p", [Name, Args0, Line]);
 format_error({badarg,Where,As}) ->
-    io_lib:format("badarg in ~w: ~w", [Where,As]);
+    ["badarg in ", pp_term(Where), ": ", pp_term(As)];
 format_error({method_on_nil, Key}) ->
-    io_lib:format("undefined method ~w on nil", [Key]);
+    ["undefined method ", pp_term(Key), " on nil"];
 format_error({illegal_key,Tab,Key}) ->
-    io_lib:format("invalid key in ~w: ~w", [Tab,Key]);
+    ["invalid key in ", pp_term(Tab), ": ", pp_term(Key)];
 format_error({illegal_index,Where,I}) ->
-    io_lib:format("invalid index in ~w: ~w", [Where,I]);
+    ["invalid index in ", pp_term(Where), ": ", pp_term(I)];
 format_error({illegal_val,Where,Val}) ->
-    io_lib:format("invalid value in ~w: ~w", [Where,Val]);
+    ["invalid value in ", pp_term(Where), ": ", pp_term(Val)];
 format_error({illegal_val,Val}) ->
-    io_lib:format("invalid value: ~w", [Val]);
+    ["invalid value: ", pp_term(Val)];
 format_error({illegal_comp,Where}) ->
-    io_lib:format("illegal comparison in ~w", [Where]);
+    ["illegal comparison in ", pp_term(Where)];
 format_error({invalid_order,Where}) ->		%Keep text!
-    io_lib:format("invalid order function in ~w", [Where]);
+    ["invalid order function in ", pp_term(Where)];
 format_error({undef_function,Name}) ->
-    io_lib:format("undefined function ~w", [Name]);
+    ["undefined function ", pp_term(Name)];
 format_error({undef_method,Obj,Name}) ->
-    io_lib:format("undefined method in ~w: ~w", [Obj,Name]);
+    ["undefined method in ", pp_term(Obj), ": ", pp_term(Name)];
 %% Pattern errors.
 format_error(invalid_pattern) ->		%Keep text!
     io_lib:format("malformed pattern", []);
@@ -129,11 +129,19 @@ format_error(invalid_char_set) ->		%Keep text!
     io_lib:format("malformed pattern (missing ']')", []);
 %% Illegal or undefined ops.
 format_error({illegal_op,Op}) ->
-    io_lib:format("illegal op: ~w", [Op]);
+    ["illegal op: ", pp_term(Op)];
 format_error({undefined_op,Op}) ->
-    io_lib:format("undefined op: ~w", [Op]);
+    ["undefined op: ", pp_term(Op)];
 format_error({no_module,Mod}) ->
     io_lib:format("module '~s' not found", [Mod]).
+
+pp_term(Int) when is_integer(Int) ->
+    integer_to_list(Int);
+pp_term(Bin) when is_binary(Bin) -> Bin;
+pp_term(List) when is_list(List) ->
+    [$", lists:map(fun pp_term/1, List), $"];
+pp_term(Other) ->
+    io_lib:format("~p", [Other]).
 
 %% boolean_value(Rets) -> boolean().
 %% first_value(Rets) -> Value | nil.
