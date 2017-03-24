@@ -59,22 +59,21 @@ define_fun_in_lua_test() ->
     {_, State1} = luerl:do(<<"function mkadder(incby)\n  return function(i)\n    print(\"Call into Luerl!\")\n    return i + incby\n  end\nend\n">>, State),
     {[{function, Fun}], _State2} = luerl:call_function([mkadder], [1], State1),
     {[{function, Fun2}], _State3} = luerl:call_function([mkadder], [2], State1),
-    ?assertEqual(Fun([4]), [5.0]),
-    ?assertEqual(Fun2([4]), [6.0]).
+    ?assertEqual(Fun([4]), [5]),
+    ?assertEqual(Fun2([4]), [6]).
 
 define_fun2_in_lua_test() ->
     State = luerl:init(),
     {_, State1} = luerl:do(<<"function mklist(numentries)\n  return function(entryval)\n    local list = {}\n    for i = 1,numentries do\n      list[i] = entryval\n    end\n    return list\n  end\nend\n">>, State),
     {[{function, Fun}], _State2} = luerl:call_function([mklist], [5], State1),
     {[{function, Fun2}], _State3} = luerl:call_function([mklist], [10], State1),
-    ?assertEqual(Fun([4]), [[{1,4.0}, {2,4.0}, {3,4.0}, {4,4.0}, {5,4.0}]]),
-    ?assertEqual(Fun2([4]), [[{1,4.0}, {2,4.0}, {3,4.0}, {4,4.0}, {5,4.0},
-			      {6,4.0}, {7,4.0}, {8,4.0}, {9,4.0}, {10,4.0}]]).
+    ?assertEqual(Fun([4]), [[4,4,4,4,4]]),
+    ?assertEqual(Fun2([4]), [[4,4,4,4,4,4,4,4,4,4]]).
 
 newindex_metamethod_test() ->
     State = luerl:init(),
     {[TVal, MVal], _State1} = luerl:do(<<"local t = {}\nlocal m = setmetatable({}, {__newindex = function (tab, key, value)\n  t[key] = value\nend})\n\nm[123] = 456\nreturn t[123], m[123]">>, State),
-    ?assertEqual(TVal, 456.0),
+    ?assertEqual(TVal, 456),
     ?assertEqual(MVal, nil).
 
 float_concat_test() ->
