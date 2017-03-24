@@ -191,9 +191,8 @@ str_to_float(S) ->
     end.
 
 number_to_list(N) ->
-    I = round(N),
-    case I == N of				%Is it an "integer"?
-	true -> integer_to_list(I);
+    case is_integer(N) of
+	true -> integer_to_list(N);
 	false -> io_lib:write(N)
     end.
 

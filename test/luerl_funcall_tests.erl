@@ -33,7 +33,7 @@ external_fun_test() ->
     ?assertEqual(BoolVal, true),
     ?assertEqual(BoolVal2, true),
     ?assertEqual(BoolVal3, true).
-    
+
 external_nostate_fun_test() ->
     State = luerl:init(),
     F = fun([A]) ->
@@ -76,3 +76,8 @@ newindex_metamethod_test() ->
     {[TVal, MVal], _State1} = luerl:do(<<"local t = {}\nlocal m = setmetatable({}, {__newindex = function (tab, key, value)\n  t[key] = value\nend})\n\nm[123] = 456\nreturn t[123], m[123]">>, State),
     ?assertEqual(TVal, 456.0),
     ?assertEqual(MVal, nil).
+
+float_concat_test() ->
+    State = luerl:init(),
+    {ok, [V]} = luerl:eval(<<"return ''..1.0">>, State),
+    ?assertEqual(V, <<"1.0">>).
